@@ -9,7 +9,7 @@ import { app } from '../firebase';
 import { useSelector } from 'react-redux';
 import { useNavigate, useParams } from 'react-router-dom';
 
-export default function CreateListing() {
+export default function UpdateListing() {
   const { currentUser } = useSelector((state) => state.user);
   const navigate = useNavigate();
   const params = useParams();
@@ -192,63 +192,74 @@ export default function CreateListing() {
         Update a Listing
       </h1>
       <form onSubmit={handleSubmit} className='flex flex-col sm:flex-row gap-4'>
-        <div className='flex flex-col gap-4 flex-1'>
+      <div className="flex flex-col gap-4 flex-1">
           <input
-            type='text'
-            placeholder='Name'
-            className='border p-3 rounded-lg'
-            id='name'
-            maxLength='62'
-            minLength='10'
+            type="text"
+            placeholder="Name"
+            className="border p-3 rounded-lg"
+            id="name"
+            maxLength="62"
+            minLength="10"
             required
             onChange={handleChange}
             value={formData.name}
           />
           <textarea
-            type='text'
-            placeholder='Description'
-            className='border p-3 rounded-lg'
-            id='description'
+            placeholder="Description"
+            className="border p-3 rounded-lg"
+            id="description"
             required
             onChange={handleChange}
             value={formData.description}
           />
           <input
-            type='text'
-            placeholder='Address'
-            className='border p-3 rounded-lg'
-            id='address'
+            type="text"
+            placeholder="Address"
+            className="border p-3 rounded-lg"
+            id="address"
             required
             onChange={handleChange}
             value={formData.address}
           />
+         <input
+             type="text"
+             placeholder="phone number e.g +263......"
+             className="border p-3 rounded-lg"
+             id="phoneNumber"
+            value={formData.phoneNumber}
+            onChange={(e) => setFormData({ ...formData, phoneNumber: e.target.value })}
+            pattern="^\+?[1-9]\d{1,14}$"
+            title="Phone number should start with '+' followed by the country code and digits."
+            required
+          />
           <select
-            id='propertyType'
-            className='border p-3 rounded-lg'
+            id="propertyType"
+            className="border p-3 rounded-lg"
             onChange={handleChange}
             value={formData.propertyType}
           >
-            <option value=''>Select Property Type</option>
-            <option value='apartment'>Apartment</option>
-            <option value='house'>House</option>
-            <option value='flats'>Flats</option>
-            <option value='commercial-property'>Commercial Property</option>
-            <option value='office'>Office</option>
-            <option value='land'>Land</option>
+            <option value="">Select Property Type</option>
+            <option value="apartment">Apartment</option>
+            <option value="house">House</option>
+            <option value="flats">Flats</option>
+            <option value="commercial-property">Commercial Property</option>
+            <option value="office">Office</option>
+            <option value="land">Land</option>
           </select>
-          
           <select
-            id='status'
-            className='border p-3 rounded-lg'
+            id="status"
+            className="border p-3 rounded-lg"
             onChange={handleChange}
             value={formData.status}
           >
-            <option value=''>Select Property Status</option>
-            <option value='available'>Available</option>
-            <option value='sold'>Sold</option>
+            <option value="">Select Property Status</option>
+            <option value="available">Available</option>
+            <option value="sold">Sold</option>
           </select>
 
-          <div className='flex gap-6 flex-wrap'>
+          {formData.propertyType !== 'land' && (
+            <>
+              <div className='flex gap-6 flex-wrap'>
             <div className='flex gap-2'>
               <input
                 type='checkbox'
@@ -300,34 +311,66 @@ export default function CreateListing() {
               <span>Offer</span>
             </div>
           </div>
-          <div className='flex flex-wrap gap-6'>
-            <div className='flex items-center gap-2'>
+              <div className="flex flex-wrap gap-6">
+                <div className="flex items-center gap-2">
+                  <input
+                    type="number"
+                    id="bedrooms"
+                    min="1"
+                    max="10"
+                    required
+                    className="p-3 border border-gray-300 rounded-lg"
+                    onChange={handleChange}
+                    value={formData.bedrooms}
+                  />
+                  <p>Beds</p>
+                </div>
+                <div className="flex items-center gap-2">
+                  <input
+                    type="number"
+                    id="bathrooms"
+                    min="1"
+                    max="10"
+                    required
+                    className="p-3 border border-gray-300 rounded-lg"
+                    onChange={handleChange}
+                    value={formData.bathrooms}
+                  />
+                  <p>Baths</p>
+                </div>
+              </div>
+            </>
+          )}
+
+          {formData.propertyType === 'land' && (
+            <>
+              <div className="flex flex-wrap gap-6">
+                <div className="flex items-center gap-2">
+                  <input
+                    type="number"
+                    id="squareMeters"
+                    min="1"
+                    required
+                    className="p-3 border border-gray-300 rounded-lg"
+                    onChange={handleChange}
+                    value={formData.squareMeters}
+                  />
+                  <p>Square Meters</p>
+                </div>
+              </div>
+              <div className='flex gap-2'>
               <input
-                type='number'
-                id='bedrooms'
-                min='1'
-                max='10'
-                required
-                className='p-3 border border-gray-300 rounded-lg'
+                type='checkbox'
+                id='sale'
+                className='w-5'
                 onChange={handleChange}
-                value={formData.bedrooms}
+                checked={formData.type === 'sale'}
               />
-              <p>Beds</p>
+              <span>Sell</span>
             </div>
-            <div className='flex items-center gap-2'>
-              <input
-                type='number'
-                id='bathrooms'
-                min='1'
-                max='10'
-                required
-                className='p-3 border border-gray-300 rounded-lg'
-                onChange={handleChange}
-                value={formData.bathrooms}
-              />
-              <p>Baths</p>
-            </div>
-            <div className='flex items-center gap-2'>
+            </>
+          )}
+             <div className='flex items-center gap-2'>
               <input
                 type='number'
                 id='regularPrice'
@@ -359,6 +402,7 @@ export default function CreateListing() {
                 />
                 <div className='flex flex-col items-center'>
                   <p>Discounted price</p>
+
                   {formData.type === 'rent' && (
                     <span className='text-xs'>($ / month)</span>
                   )}
@@ -366,7 +410,8 @@ export default function CreateListing() {
               </div>
             )}
           </div>
-        </div>
+
+        {/* Images Section */}
         <div className='flex flex-col flex-1 gap-4'>
           <p className='font-semibold'>
             Images:
@@ -419,7 +464,7 @@ export default function CreateListing() {
             disabled={loading || uploading}
             className='p-3 bg-slate-700 text-white rounded-lg uppercase hover:opacity-95 disabled:opacity-80'
           >
-            {loading ? 'Updating...' : 'Update listing'}
+            {loading ? 'Creating...' : 'Create listing'}
           </button>
           {error && <p className='text-red-700 text-sm'>{error}</p>}
         </div>
@@ -427,4 +472,5 @@ export default function CreateListing() {
     </main>
   );
 }
+
 
