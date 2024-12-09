@@ -8,6 +8,7 @@ import ShowListings from "../components/ShowListings";
 import ManageListings from "../components/ManageListings"; // Admin-specific
 import ManageUsers from "../components/ManageUsers"; // Admin-specific
 import AdminDashboard from "../components/AdminDashboard"; // Admin-specific
+import Reviews from "../components/Reviews";
 
 const Dashboard = () => {
   const location = useLocation();
@@ -127,6 +128,7 @@ const Dashboard = () => {
           {currentUser?.isAdmin && tab === "dashboard" && <AdminDashboard />}
           {currentUser?.isAdmin && tab === "manage-listings" && <ManageListings />}
           {currentUser?.isAdmin && tab === "users" && <ManageUsers />}
+          {currentUser?.isAdmin && tab === "reviews" && <Reviews />}
         </div>
       </div>
     </div>

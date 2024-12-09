@@ -27,24 +27,36 @@ import Contact from '../components/Contact';
 export default function Listing() {
   SwiperCore.use([Navigation]);
   const [listing, setListing] = useState(null);
-  const [loading,] = useState(false);
-  const [error,] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(false);
   const [copied, setCopied] = useState(false);
   const [contact, setContact] = useState(false);
-  const [views,] = useState(0);
+  const [views, setViews] = useState(0);
   const params = useParams();
   const { currentUser } = useSelector((state) => state.user);
 
   useEffect(() => {
     const fetchListing = async () => {
       try {
+        // Fetch listing data
         const res = await fetch(`/api/listing/get/${params.listingId}`);
         const data = await res.json();
-        setListing(data);
+        
+        if (res.ok) {
+          setListing(data);
+          setViews(data.views || 0); // Set the initial view count from the listing data
+        } else {
+          setError(true);
+        }
+        
         // Increment views after setting listing
         await fetch(`/api/listing/views/increment/${params.listingId}`, { method: 'POST' });
+
       } catch (err) {
         console.error('Error:', err);
+        setError(true);
+      } finally {
+        setLoading(false);
       }
     };
     fetchListing();
@@ -54,6 +66,7 @@ export default function Listing() {
     const formattedPhone = phoneNumber.replace(/\D/g, ''); // Clean up the phone number
     return `https://wa.me/${formattedPhone}`;
   };
+
 
   return (
     <main>
@@ -240,16 +253,16 @@ export default function Listing() {
     </a>
   </div>
 )}
-                {/* Contact Button */}
-                {currentUser && listing.userRef !== currentUser._id && !contact && (
-                  <button
-                    onClick={() => setContact(true)}
-                    className="mt-6 bg-slate-700 text-white px-6 py-3 rounded-lg uppercase hover:bg-slate-800"
-                  >
-                    Contact landlord
-                  </button>
-                )}
-                {contact && <Contact listing={listing} />}
+               {/* Contact Button */}
+{listing.userRef !== currentUser?._id && !contact && (
+  <button
+    onClick={() => setContact(true)}
+    className="mt-6 bg-slate-700 text-white px-6 py-3 rounded-lg uppercase hover:bg-slate-800"
+  >
+    Contact landlord
+  </button>
+)}
+{contact && <Contact listing={listing} />}
               </div>
             </div>
           </div>

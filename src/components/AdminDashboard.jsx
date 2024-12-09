@@ -3,32 +3,38 @@ import { FiUsers } from "react-icons/fi";
 import { FaHome, FaRegComment } from "react-icons/fa";
 import { RiAdminLine } from "react-icons/ri";
 import { useGetUserQuery } from "../redux/auth/authApi";
-import { useTotalListingsCountQuery } from "../redux/auth/listingApi"; // import the hook for listings count
+import { useTotalReviewsCountQuery } from "../redux/auth/reviewApi";
+import { useTotalListingsCountQuery, useGetListingsQuery } from "../redux/auth/listingApi"; // Import useGetListingsQuery
 import ListingsChart from "./ListingsChart";
 
-
 const Dashboard = () => {
-  const [query, setQuery] = useState({ search: '', category: '' });
+  const [query, setQuery] = useState({ search: "", category: "" });
+
   // Fetch users data
   const { data: users = {}, isLoading: usersLoading } = useGetUserQuery(query);
-  const adminCounts = users.users?.filter(user => user.role === 'admin').length;
+  const adminCounts = users.users?.filter((user) => user.role === "admin").length;
 
-   // Fetch total listings count
-   const { data: listingsCountData = {}, isLoading: listingsCountLoading, error: listingsCountError } = useTotalListingsCountQuery();
+  // Fetch total listings count
+  const { data: listingsCountData = {}, isLoading: listingsCountLoading, error: listingsCountError } = useTotalListingsCountQuery();
 
-   // If loading, show loading message
-   if (usersLoading || listingsCountLoading) {
-     return <p>Loading...</p>;
-   }
- 
-   // Handle error if the listings count fetch fails
-   if (listingsCountError) {
-     return <p>Error fetching listings count</p>;
-   }
- 
-   // Extract count from the data
-   const totalListingsCount = listingsCountData || 0;
- 
+  // Fetch total reviews count
+  const { data: ReviewsCountData = {}, isLoading: ReviewsCountLoading, error: ReviewsCountError } = useTotalReviewsCountQuery();
+
+  // Fetch listings data for the chart
+  const { data: listings = [], isLoading: listingsLoading } = useGetListingsQuery();
+
+  if (usersLoading || listingsCountLoading || ReviewsCountLoading || listingsLoading) {
+    return <p>Loading...</p>;
+  }
+
+  // Handle errors
+  if (listingsCountError || ReviewsCountError) {
+    return <p>Error fetching data</p>;
+  }
+
+  // Extract count from the data
+  const totalListingsCount = listingsCountData || 0;
+  const totalReviewsCount = ReviewsCountData?.count || 0;
 
   return (
     <div className="space-y-6">
@@ -43,37 +49,37 @@ const Dashboard = () => {
         {/* Users Card */}
         <div className="bg-green-100 py-6 w-full rounded-sm space-y-1 flex flex-col items-center">
           <FiUsers className="size-8 text-orange-500" />
-          <p>{users.users?.length} Users</p>    {/* Display the total users count */}
+          <p>{users.users?.length} Users</p> {/* Display the total users count */}
         </div>
 
         {/* Listings Card */}
         <div className="bg-slate-600 py-6 w-full text-white rounded-sm space-y-1 flex flex-col items-center">
           <FaHome className="size-8 text-orange-500" />
           <p>{totalListingsCount} Listings</p> {/* Display total listings count */}
-         
         </div>
+
         {/* Admins Card */}
         <div className="bg-green-100 py-6 w-full rounded-sm space-y-1 flex flex-col items-center">
           <RiAdminLine className="size-8 text-orange-500" />
-          <p>{adminCounts} Admin{adminCounts !== 1 ? 's' : ''}</p> {/* Display the count of admins */}
+          <p>
+            {adminCounts} Admin{adminCounts !== 1 ? "s" : ""}
+          </p>{" "}
+          {/* Display the count of admins */}
         </div>
 
         {/* Feedbacks Card */}
         <div className="bg-slate-600 py-6 w-full text-white rounded-sm space-y-1 flex flex-col items-center">
           <FaRegComment className="size-8 text-orange-500" />
-          <p>Feedbacks</p>
+          <p>{totalReviewsCount} Feedbacks</p> {/* Display total reviews count */}
         </div>
       </div>
 
-      {/* graphs and charts */}
+      {/* Graphs and Charts */}
       <div className="pt-5 pb-5">
-        <ListingsChart />
-
+        <ListingsChart listings={listings} /> {/* Pass the fetched listings data */}
       </div>
     </div>
   );
 };
-
-
 
 export default Dashboard;

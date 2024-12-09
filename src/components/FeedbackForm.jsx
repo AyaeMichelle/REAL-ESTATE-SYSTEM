@@ -5,49 +5,67 @@ const FeedbackForm = ({ closeModal }) => {
   const [comment, setComment] = useState(""); // User's feedback
   const [submitted, setSubmitted] = useState(false); // For showing submission message
   const [showModal, setShowModal] = useState(true); // Modal visibility (set to true to show by default)
-  const [contact, setContact] = useState(false); // Whether user wants to be contacted
+  const [contact, setContact] = useState(""); // Contact preference ("Yes" or "No")
   const [name, setName] = useState(""); // User's name if they want to be contacted
   const [phone, setPhone] = useState(""); // User's phone number if they want to be contacted
   const [visitPurpose, setVisitPurpose] = useState(""); // Dropdown selection for purpose of visit
   const [visitSuccess, setVisitSuccess] = useState(""); // Manage radio buttons for success/failure
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-
+  const handleSubmit = async (e) => {
+    e.preventDefault(); // Prevent form from refreshing the page
+  
     const feedbackData = {
       rating,
       comment,
       visitPurpose,
       visitSuccess,
-      contact,
-      name: contact ? name : null,
-      phone: contact ? phone : null,
+      contact: contact === "Yes", // Convert "Yes" to true, "No" to false
+      name: contact === "Yes" ? name : null,
+      phone: contact === "Yes" ? phone : null,
     };
-
-    console.log("Feedback Submitted:", feedbackData);
-
-    setSubmitted(true); // Show submission success message
-
-    // Reset form fields after submission
-    setRating(0);
-    setComment("");
-    setVisitPurpose("");
-    setVisitSuccess("");
-    setContact(false);
-    setName("");
-    setPhone("");
-
-    // Close the modal after submission
-    setTimeout(() => {
-      closeModal();
-    }, 2000);
+    console.log('Feedback Data:', feedbackData);
+  
+    try {
+      const response = await fetch("http://localhost:3000/api/reviews/submit", {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json', // Specify JSON content type
+        },
+        body: JSON.stringify(feedbackData), // Convert feedback data to JSON string
+      });
+  
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+  
+      const data = await response.json();
+      console.log('Feedback Submitted:', data);
+  
+      setSubmitted(true); // Show submission success message
+  
+      // Reset form fields after submission
+      setRating(0);
+      setComment("");
+      setVisitPurpose("");
+      setVisitSuccess("");
+      setContact(false);
+      setName("");
+      setPhone("");
+  
+      // Close the modal after submission
+      setTimeout(() => {
+        closeModal();
+      }, 2000);
+    } catch (error) {
+      console.error('Error submitting feedback:', error);
+    }
   };
-
+  
   return (
     <>
       {showModal && (
         <div className="fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50 z-50">
-          <div className="relative max-w-3xl mx-auto p-6 bg-white shadow-lg rounded-md">
+          <div className="relative max-w-2xl mx-auto p-6 bg-white shadow-lg rounded-md overflow-y-auto max-h-[90vh]">
             {/* Close Button */}
             <button
               onClick={closeModal}
@@ -57,28 +75,24 @@ const FeedbackForm = ({ closeModal }) => {
             </button>
 
             {/* Logo */}
-            <div className="text-center mb-4">
+            <div className="text-center">
               <img
-                src="/path-to-your-logo.png"
+                src="./images/logo.png"
                 alt="Logo"
-                className="w-32 mx-auto"
+                className="w-30 mx-auto"
               />
             </div>
 
-            {/* Title */}
-            <h2 className="text-2xl font-bold mb-6 text-center text-blue-600">
-              We’d love your feedback!
-            </h2>
-
             {/* Description */}
-            <p className="text-lg text-center mb-4">
-              Please take two minutes to help make our site better.
+            <p className="text-lg text-center mt-2 mb-4">
+              We'd love your feedback!
+              <p className="text-lg text-center">Please take two minutes to help make our site better</p>
             </p>
 
             {!submitted ? (
               <form onSubmit={handleSubmit}>
                 {/* Purpose of Visit Dropdown */}
-                <div className="form-container max-h-[400px] overflow-y-auto">
+                <div className="mb-4">
                   <label
                     htmlFor="visitPurpose"
                     className="block text-lg font-medium"
@@ -93,8 +107,13 @@ const FeedbackForm = ({ closeModal }) => {
                   >
                     <option value="">Please Select Option</option>
                     <option value="Search Property">Search Property</option>
-                    <option value="Contact Agent">Contact Agent</option>
-                    <option value="Explore Neighborhoods">Explore Neighborhoods</option>
+                    <option value="Post Listings">Post Listings</option>
+                    <option value="Explore Neighborhoods">
+                      Just browsing site for fun
+                    </option>
+                    <option value="Contact Professional">
+                      Contact a Real Estate professional
+                    </option>
                     <option value="Other">Other</option>
                   </select>
                 </div>
@@ -102,7 +121,8 @@ const FeedbackForm = ({ closeModal }) => {
                 {/* Was the visit successful? */}
                 <div className="mb-4">
                   <p className="text-lg font-medium">
-                    Were you able to complete your primary purpose of visit today?
+                    Were you able to complete your primary purpose of visit
+                    today?
                   </p>
                   <div className="flex space-x-4 mt-2">
                     <label>
@@ -144,18 +164,31 @@ const FeedbackForm = ({ closeModal }) => {
                     If we have any questions regarding your response, should we
                     contact you?
                   </p>
-                  <label className="inline-flex items-center mt-2">
-                    <input
-                      type="checkbox"
-                      checked={contact}
-                      onChange={() => setContact(!contact)}
-                      className="mr-2"
-                    />
-                    Yes, please contact me.
-                  </label>
+                  <div className="flex space-x-4 mt-2">
+                    <label>
+                      <input
+                        type="radio"
+                        name="contact"
+                        value="Yes"
+                        checked={contact === "Yes"}
+                        onChange={() => setContact("Yes")}
+                      />
+                      Yes
+                    </label>
+                    <label>
+                      <input
+                        type="radio"
+                        name="contact"
+                        value="No"
+                        checked={contact === "No"}
+                        onChange={() => setContact("No")}
+                      />
+                      No
+                    </label>
+                  </div>
                 </div>
 
-                {contact && (
+                {contact === "Yes" && (
                   <>
                     <div className="mb-4">
                       <label
@@ -229,7 +262,7 @@ const FeedbackForm = ({ closeModal }) => {
                 {/* Submit Button */}
                 <button
                   type="submit"
-                  className="bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-700 w-full"
+                  className="bg-orange-500 text-white py-2 px-4 rounded-md hover:bg-orange-700"
                 >
                   Submit Feedback
                 </button>
