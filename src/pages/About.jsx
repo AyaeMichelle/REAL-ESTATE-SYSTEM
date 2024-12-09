@@ -1,5 +1,4 @@
 import React from 'react';
-import FeedbackForm from '../components/FeedbackForm';
 import SubscriptionForm from '../components/Subscribe';
 import { FaBuilding, FaBullhorn, FaClipboardCheck, FaFileInvoiceDollar, FaHandshake, FaHome, FaRocket, FaSearchLocation, FaUsers } from 'react-icons/fa';
 
@@ -185,14 +184,7 @@ export default function About() {
 </div>
       </div>
           {/* Feedback Form */}  
-    <div className="bg-gray-100 py-12">  
-      <div className="max-w-[90%] mx-auto">  
-        <h2 className="text-3xl font-bold text-slate-800 text-center mb-6">We Value Your Feedback</h2>  
-        <p className="text-center text-slate-600 mb-8">  
-          Help us improve by sharing your thoughts, suggestions, or concerns.  
-        </p>  
-        <FeedbackForm />  
-      </div>  
+    <div className="bg-gray-100 py-12">    
     </div>  
 
     {/* Subscription Form */}  

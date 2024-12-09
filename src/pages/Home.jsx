@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import ListingItem from '../components/ListingItem';
 import SubscriptionForm from '../components/Subscribe';
+import FeedbackForm from '../components/FeedbackForm';
 
 
 export default function Home() {
@@ -10,6 +11,12 @@ export default function Home() {
   const [rentListings, setRentListings] = useState([]);
   const [currentSlide, setCurrentSlide] = useState(0);
 
+  const [showModal, setShowModal] = useState(false); // State to control modal visibility
+
+  // Toggle the modal visibility
+  const toggleModal = () => {
+    setShowModal(!showModal);
+  };
   useEffect(() => {
     const fetchOfferListings = async () => {
       try {
@@ -50,17 +57,11 @@ export default function Home() {
 
     return () => clearInterval(interval);
   }, [offerListings.length]);
+ 
 
   return (
     <div>
-
-      <button
-         className="fixed bottom-20 right-0  bg-orange-500 text-white px-4 py-2 rounded-lg shadow-lg hover:bg-blue-700 transform rotate-90"
-          onClick={() => alert('Feedback feature coming soon!')}
-         >
-          Feedback
-        </button>
-    <div className="max-w-full mx-auto p-5">
+    <div className="max-w-[98%] mx-auto p-5">
       {/* Unified Top Section with Two Columns */}
       <div className="flex flex-col lg:flex-row items-center h-[60vh] gap-8 p-8 rounded-top-md bg-white shadow-lg">
         {/* Left Column with Text */}
@@ -149,6 +150,15 @@ export default function Home() {
     <div className="my-custom-class">
        <SubscriptionForm />
       </div>
+      <button
+        className="fixed bottom-20 right-0 bg-orange-500 text-white px-4 py-2 rounded-lg shadow-lg hover:bg-orange-500 transform rotate-90"
+        onClick={toggleModal} // Toggle modal visibility on click
+      >
+        Feedback
+      </button>
+
+      {/* Show FeedbackForm Modal */}
+      {showModal && <FeedbackForm closeModal={toggleModal} />} {/* Pass closeModal function */}
     
     </div>
     
