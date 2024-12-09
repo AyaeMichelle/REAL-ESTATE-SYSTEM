@@ -37,12 +37,11 @@ const listingApi = createApi({
       invalidatesTags: ["Listing"], // Invalidate cache after mutation
     }),
     updateListing: builder.mutation({
-      query: ({ listingId, body }) => ({
-        url: `/update/${listingId}`,
-        method: "PUT", // Use PUT or PATCH as per your API
-        body,
+      query: ({id, ...updatedData }) => ({
+        url: `/update/${id}`,
+        method: 'PUT',
+        body: updatedData,
       }),
-      invalidatesTags: ["Listing"],
     }),
     getListing: builder.query({
       query: (listingId) => ({

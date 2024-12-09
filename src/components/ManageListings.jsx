@@ -4,14 +4,15 @@ import { FaBath, FaBed, FaCar, FaCouch, FaTag } from "react-icons/fa";
 import { MdLocationOn } from "react-icons/md";
 import { BsCalendarEvent } from "react-icons/bs";
 import { formatDistanceToNow } from "date-fns";
-import { useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 
 const ManageListings = () => {
   const [query, setQuery] = useState({ search: "", category: "" });
   const [limit, setLimit] = useState(8); // Initialize limit to show 8 listings
-  const { data: listings = [], error, isLoading, refetch } = useAllListingsQuery(query);
+  const { data, error, isLoading, refetch } = useAllListingsQuery(query);
+  const listings = data?.listings || [];
   const [deleteListing] = useDeleteListingMutation();
-  const navigate = useNavigate();
+ 
 
   console.log("Listings data:", listings); 
 
@@ -20,13 +21,14 @@ const ManageListings = () => {
       const confirmation = window.confirm("Are you sure you want to delete this listing?");
       if (confirmation) {
         const response = await deleteListing(id).unwrap();
-        alert(response.message); // Show success message
+        alert("Listing successfully deleted"); // Show success message
         refetch(); // Refetch listings after deletion
       }
     } catch (error) {
       console.error("Failed to delete listing:", error);
     }
   };
+
 
   if (isLoading) {
     return <div>Loading...</div>;
@@ -85,19 +87,16 @@ const ManageListings = () => {
 
               {/* Overlay Buttons */}
               <div className="absolute inset-0 bg-black bg-opacity-50 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex justify-center items-center gap-4">
-                <button
-                  onClick={() => navigate(`/update/${listing.id}`)}
-                  className="px-4 py-2 bg-blue-500 text-white font-semibold rounded-lg shadow hover:bg-blue-600"
-                >
-                  Edit
-                </button>
-                <button
-                  onClick={() => handleDelete(listing.id)}
+              <Link to={`/update-listing/${listing._id}`}>
+                      <button className="px-4 py-2 bg-green-700 text-white font-semibold rounded-lg shadow hover:bg-green-800">Edit</button>
+                </Link>
+               <button
+                 onClick={() => handleDelete(listing._id)}
                   className="px-4 py-2 bg-red-500 text-white font-semibold rounded-lg shadow hover:bg-red-600"
                 >
-                  Delete
-                </button>
-              </div>
+                   Delete
+                 </button>
+                </div>
 
               {/* Listing Details */}
               <div className="p-4 flex justify-between items-center text-gray-600 text-sm">
