@@ -48,7 +48,7 @@ export default function SignUp() {
        }
        setLoading(false);
        setError(null);
-       navigate('/dashboard?tab=profile');
+       navigate('/log-in');
       }catch (error) {
       setLoading(false);
       setError(error.message);

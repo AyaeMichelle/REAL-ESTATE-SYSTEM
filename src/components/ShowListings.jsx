@@ -2,8 +2,6 @@ import { Link } from 'react-router-dom';
 import { FaBed, FaBath, FaCar, FaCouch } from 'react-icons/fa'; // Import icons
 
 const ShowListings = ({ listings, error, onDeleteListing }) => {
-  
-
   if (error) {
     return <p className="text-red-500">Error fetching listings. Please try again later.</p>;
   }
@@ -26,7 +24,7 @@ const ShowListings = ({ listings, error, onDeleteListing }) => {
               <tr className="bg-gray-100 text-gray-600 text-sm leading-normal">
                 <th className="py-3 px-6 text-left">Property</th>
                 <th className="py-3 px-6 text-left">Amenities</th>
-                <th className="py-3 px-6 text-left">Action</th>
+                <th className="py-3 px-6 text-left">Action</th> {/* Updated columns */}
               </tr>
             </thead>
             <tbody className="text-gray-700 text-sm font-light">
@@ -74,19 +72,16 @@ const ShowListings = ({ listings, error, onDeleteListing }) => {
                     </div>
                     <p className="text-gray-500">Verified Amenities</p>
                   </td>
-                  <td className="py-3 px-6">
-                    <p className="text-gray-500">{listing.dateAdded}</p>
-                  </td>
                   <td className="py-3 px-6 flex flex-col items-center space-y-2">
-                  <button
-                  onClick={() => {
-                    if (onDeleteListing) onDeleteListing(listing._id);
-                    else console.log("onDeleteListing function not available");
-                  }}
-                  className="text-red-700 uppercase"
-                >
-                  Delete
-                </button>
+                    <button
+                      onClick={() => {
+                        if (onDeleteListing) onDeleteListing(listing._id);
+                        else console.log("onDeleteListing function not available");
+                      }}
+                      className="text-red-700 uppercase"
+                    >
+                      Delete
+                    </button>
                     <Link to={`/update-listing/${listing._id}`}>
                       <button className="text-green-700 uppercase">Edit</button>
                     </Link>
@@ -102,4 +97,3 @@ const ShowListings = ({ listings, error, onDeleteListing }) => {
 };
 
 export default ShowListings;
-

@@ -49,8 +49,7 @@ export default function Footer() {
           <ul className="space-y-2 text-gray-400">
             <li><a href="/" className="hover:text-white">Home</a></li>
             <li><a href="/about" className="hover:text-white">About Us</a></li>
-            <li><a href="/listings" className="hover:text-white">Listings</a></li>
-            <li><a href="/contact" className="hover:text-white">Contact Us</a></li>
+            <li><a href="/contact-us" className="hover:text-white">Contact Us</a></li>
           </ul>
         </div>
         
@@ -64,7 +63,7 @@ export default function Footer() {
         
       </div>
       <div className=" border-t border-gray-700 mt-8 pt-4 text-center text-gray-400">
-        <p>&copy; 2024 Ayanda Michelle</p>
+        <p>&copy; 2024 @ Ayanda Michelle</p>
       </div>
     </footer>
   );

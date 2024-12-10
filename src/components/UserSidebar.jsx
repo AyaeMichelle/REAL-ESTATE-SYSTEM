@@ -1,4 +1,4 @@
-import { NavLink} from "react-router-dom";
+import { NavLink,useNavigate } from "react-router-dom";
 import { FaUserCog,FaSignOutAlt, FaTrashAlt} from "react-icons/fa"; // Icon for Admin section
 import { useSelector, useDispatch } from "react-redux";
 import {
@@ -13,6 +13,7 @@ import {
 export default function UserSidebar() {
   const { currentUser } = useSelector((state) => state.user);
   const dispatch = useDispatch();
+  const navigate = useNavigate();
    // React Router's navigation hook
 
   // Handle Logout
@@ -32,32 +33,31 @@ export default function UserSidebar() {
       }
     }
   };
-// Handle Delete User
-const handleDeleteUser = async () => {
-  if (
-    window.confirm(
-      "Are you sure you want to delete your account? This action cannot be undone."
-    )
-  ) {
-    try {
-      dispatch(deleteUserStart());
-      const res = await fetch(`/api/user/delete/${currentUser._id}`, {
-        method: "DELETE",
-      });
-      const data = await res.json();
-      if (!data.success) {
-        dispatch(deleteUserFailure(data.message));
-        return;
+  // Handle Delete User
+  const handleDeleteUser = async () => {
+    if (
+      window.confirm(
+        "Are you sure you want to delete your account? This action cannot be undone."
+      )
+    ) {
+      try {
+        dispatch(deleteUserStart());
+        const res = await fetch(`/api/user/delete/${currentUser._id}`, {
+          method: "DELETE",
+        });
+        const data = await res.json();
+        if (!data.success) {
+          dispatch(deleteUserFailure(data.message));
+          return;
+        }
+        dispatch(deleteUserSuccess());
+        // Redirect to a sign up page
+        window.location.href = "/sign-up";
+      } catch (error) {
+        dispatch(deleteUserFailure(error.message));
       }
-      dispatch(deleteUserSuccess());
-      // Redirect to a sign up page
-      window.location.href = "/sign-up";
-    } catch (error) {
-      dispatch(deleteUserFailure(error.message));
     }
-  }
-};
-
+  };
 
   return (
     <div className="flex-grow">
