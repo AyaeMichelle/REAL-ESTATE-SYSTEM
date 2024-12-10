@@ -115,12 +115,7 @@ const handleDeleteUser = async () => {
         >
           Reviews
         </NavLink>
-        <NavLink
-          to="/dashboard?tab=blogs"
-          className="p-1 text-gray-700 mb-1 hover:text-orange-400"
-        >
-          Blogs
-        </NavLink>
+        
 
         {/* Profile Section */}
         <div className="flex flex-col items-center mt-auto mb-4">

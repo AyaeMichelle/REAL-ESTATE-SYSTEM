@@ -8,29 +8,33 @@ export default function ForgotPassword() {
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
 
+  // Standalone function to handle API call
+  const handleForgotPassword = async (email) => {
+    const response = await fetch("http://localhost:3000/api/auth/forgot/password", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email }),
+    });
+    if (!response.ok) {
+      const data = await response.json();
+      throw new Error(data.message || "Something went wrong");
+    }
+  };
+
+  // Main submit handler
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setLoading(true);
+    setLoading(true); // Show loading state
     setError(null);
     setMessage(null);
 
     try {
-      const response = await fetch("http://localhost:3000/api/auth/forgot-password", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email }),
-      });
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.message || "Something went wrong");
-      }
-
+      await handleForgotPassword(email); // Call the standalone function
       setMessage("Password reset email sent successfully! Please check your inbox.");
     } catch (err) {
-      setError(err.message);
+      setError(err.message || "Something went wrong");
     } finally {
-      setLoading(false);
+      setLoading(false); // End loading state
     }
   };
 
@@ -38,6 +42,7 @@ export default function ForgotPassword() {
     <section>
       <h1 className="text-3xl text-center mt-6 font-bold">Forgot Password</h1>
       <div className="flex justify-center flex-wrap items-center px-6 py-12 max-w-6xl mx-auto">
+        {/* Image Section */}
         <div className="md:w-[67%] lg:w-[50%] mb-12 md:mb-6">
           <img 
             src="./images/keys.jpg" 
@@ -45,6 +50,8 @@ export default function ForgotPassword() {
             className="w-full rounded-2xl" 
           />
         </div>
+
+        {/* Form Section */}
         <div className="w-full md:w-[67%] lg:w-[40%] lg:ml-20">
           <form onSubmit={handleSubmit}>
             <input  
@@ -56,11 +63,16 @@ export default function ForgotPassword() {
               className="mb-6 w-full px-4 py-2 text-xl text-gray-700 bg-white border-gray-300 rounded transition ease-in-out" 
             />
             <div className="flex justify-between whitespace-nowrap text-sm sm:text-lg">
-              <p className="mb-6">Don't have an account?
-                <Link to="/sign-up" className="text-red-600 hover:text-red-700 transition duration-200 ease-in-out ml-1">Register</Link>
+              <p className="mb-6">
+                Don't have an account?
+                <Link to="/sign-up" className="text-red-600 hover:text-red-700 transition duration-200 ease-in-out ml-1">
+                  Register
+                </Link>
               </p>
               <p>
-                <Link to="/log-in" className="text-blue-600 hover:text-blue-800 transition duration-200 ease-in-out">Sign in instead</Link>
+                <Link to="/log-in" className="text-blue-600 hover:text-blue-800 transition duration-200 ease-in-out">
+                  Log in instead
+                </Link>
               </p>
             </div>
             <button 

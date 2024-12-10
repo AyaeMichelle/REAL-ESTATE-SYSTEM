@@ -39,7 +39,7 @@ const Dashboard = () => {
       const res = await fetch(`/api/user/listings/${currentUser._id}`);
       const data = await res.json();
 
-      console.log("API Response:", data);
+      console.log(data);
 
       if (!Array.isArray(data)) {
         setShowListingsError(true);

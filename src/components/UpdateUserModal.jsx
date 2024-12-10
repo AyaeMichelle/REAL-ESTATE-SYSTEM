@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import { useUpdateUserRoleMutation } from '../redux/auth/authApi';
 
 export default function UpdateUserModal({user,onClose,onRoleUpdate}) {
+    console.log('Modal props:', user);
     const[role,setRole] =useState(user?.role);
 
     const [updateUserRole]=useUpdateUserRoleMutation();

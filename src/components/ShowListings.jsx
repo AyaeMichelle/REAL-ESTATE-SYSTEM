@@ -2,7 +2,7 @@ import { Link } from 'react-router-dom';
 import { FaBed, FaBath, FaCar, FaCouch } from 'react-icons/fa'; // Import icons
 
 const ShowListings = ({ listings, error, onDeleteListing }) => {
-  console.log('onDeleteListing prop:', onDeleteListing); 
+  
 
   if (error) {
     return <p className="text-red-500">Error fetching listings. Please try again later.</p>;
@@ -26,7 +26,6 @@ const ShowListings = ({ listings, error, onDeleteListing }) => {
               <tr className="bg-gray-100 text-gray-600 text-sm leading-normal">
                 <th className="py-3 px-6 text-left">Property</th>
                 <th className="py-3 px-6 text-left">Amenities</th>
-                <th className="py-3 px-6 text-left">Status</th>
                 <th className="py-3 px-6 text-left">Action</th>
               </tr>
             </thead>
@@ -76,13 +75,6 @@ const ShowListings = ({ listings, error, onDeleteListing }) => {
                     <p className="text-gray-500">Verified Amenities</p>
                   </td>
                   <td className="py-3 px-6">
-                    <span
-                      className={`px-3 py-1 font-semibold rounded-full text-sm ${
-                        listing.isVerified ? 'bg-green-100 text-green-600' : 'bg-red-100 text-red-600'
-                      }`}
-                    >
-                      {listing.isVerified ? 'Verified' : 'Not Verified'}
-                    </span>
                     <p className="text-gray-500">{listing.dateAdded}</p>
                   </td>
                   <td className="py-3 px-6 flex flex-col items-center space-y-2">

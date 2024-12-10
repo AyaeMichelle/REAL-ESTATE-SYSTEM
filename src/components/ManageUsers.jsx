@@ -9,7 +9,8 @@ export default function ManageUsers() {
   const[isModalOpen,setIsModalOpen]=useState(false);
   const {data, error, isLoading, refetch}= useGetUserQuery()
   const [deleteUser] = useDeleteUserMutation();
-  console.log(deleteUser); // Check if deleteUser is a function
+ console.log(deleteUser); // This logs the mutation function itself
+ console.log(isLoading, error); // This will log the status of the mutation
   const navigate=useNavigate()
 
   const handleDelete = async (id) => {
@@ -23,9 +24,10 @@ export default function ManageUsers() {
       console.error("Failed to delete user", error);
     }
   };
-  const handleEdit =(user) =>{
-    setSelectedUser (user);
-    setIsModalOpen(true)
+  const handleEdit = (user) => {
+    console.log('Editing user:', user); // Add log
+    setSelectedUser(user);
+    setIsModalOpen(true);
   }
 
   const handleCloseModal = () =>{
